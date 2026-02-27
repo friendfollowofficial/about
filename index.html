@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Friend Follow | Social Growth Platform</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --pink:#ff9ed6;
+  --blue:#8fd3ff;
+  --purple:#caa6ff;
+}
+
+@media (prefers-color-scheme: light){
+  body{
+    background:linear-gradient(135deg,#ffe6f6,#e9f6ff,#f0e8ff);
+    color:#333;
+  }
+}
+@media (prefers-color-scheme: dark){
+  body{
+    background:linear-gradient(135deg,#1a1022,#0d1a2a,#1b1230);
+    color:white;
+  }
+}
+
+body{
+  margin:0;
+  font-family:'Prompt',sans-serif;
+  overflow:hidden;
+  height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  transition:1s;
+}
+
+/* Loader */
+#loader{
+  position:fixed;
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:inherit;
+  z-index:999;
+}
+
+.typing{
+  font-size:18px;
+  border-right:2px solid var(--purple);
+  white-space:nowrap;
+  overflow:hidden;
+}
+
+/* Main container */
+.container{
+  opacity:0;
+  transform:translateY(20px);
+  transition:1.5s;
+}
+
+.container.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.logo-wrap{
+  position:relative;
+  display:inline-block;
+}
+
+.logo{
+  width:120px;
+  border-radius:30px;
+  box-shadow:0 0 40px rgba(200,160,255,.6);
+}
+
+/* light sweep */
+.logo-wrap::after{
+  content:'';
+  position:absolute;
+  top:0;
+  left:-150%;
+  width:50%;
+  height:100%;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.6),transparent);
+  transform:skewX(-20deg);
+  animation:sweep 4s infinite;
+}
+
+@keyframes sweep{
+  0%{left:-150%;}
+  50%{left:150%;}
+  100%{left:150%;}
+}
+
+h1{
+  font-size:30px;
+  margin-top:15px;
+  background:linear-gradient(90deg,var(--pink),var(--blue),var(--purple));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+/* Tagline */
+.tagline{
+  margin-top:12px;
+  font-size:15px;
+  line-height:1.8;
+}
+
+/* Animated badges */
+.badges{
+  margin-top:20px;
+  font-size:12px;
+  letter-spacing:2px;
+  opacity:.8;
+  animation:fadeLoop 6s infinite;
+}
+
+@keyframes fadeLoop{
+  0%{opacity:.2}
+  50%{opacity:1}
+  100%{opacity:.2}
+}
+
+/* Bubbles */
+.bubble{
+  position:absolute;
+  bottom:-100px;
+  background:linear-gradient(145deg,var(--pink),var(--purple));
+  border-radius:50%;
+  opacity:.15;
+  animation:float linear infinite;
+}
+
+@keyframes float{
+  0%{transform:translateY(0);}
+  100%{transform:translateY(-120vh);}
+}
+
+/* Flowers */
+.flower{
+  position:absolute;
+  font-size:20px;
+  animation:float linear infinite;
+  opacity:.6;
+}
+
+/* Particle grid */
+canvas{
+  position:absolute;
+  top:0;
+  left:0;
+  z-index:-1;
+}
+</style>
+</head>
+<body>
+
+<canvas id="grid"></canvas>
+
+<audio id="ambient" autoplay loop>
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-space-ambience-122.mp3" type="audio/mpeg">
+</audio>
+
+<div id="loader">
+  <div class="typing" id="typeText"></div>
+</div>
+
+<div class="container" id="content">
+  <div class="logo-wrap">
+    <img src="https://raw.githubusercontent.com/friendfollowofficial/about/a57288448586e9acebdef505ff8397bd609be80b/logo.png" class="logo">
+  </div>
+  <h1>Friend Follow</h1>
+  <div class="tagline">
+    ดันคลิปฟีด • เพิ่มผู้ติดตาม<br>
+    เพิ่มหัวใจ • เปิดการมองเห็นช่อง
+  </div>
+
+  <div class="badges">
+    Secure • Fast • Trusted
+  </div>
+</div>
+
+<script>
+/* Typewriter */
+const text="กำลังเข้าสู่ Friend Follow...";
+let i=0;
+function type(){
+  if(i<text.length){
+    document.getElementById("typeText").innerHTML+=text.charAt(i);
+    i++;
+    setTimeout(type,60);
+  } else {
+    setTimeout(()=>{
+      document.getElementById("loader").style.display="none";
+      document.getElementById("content").classList.add("show");
+    },800);
+  }
+}
+type();
+
+/* Bubbles */
+for(let i=0;i<15;i++){
+  let b=document.createElement("div");
+  b.className="bubble";
+  let size=Math.random()*60+20;
+  b.style.width=size+"px";
+  b.style.height=size+"px";
+  b.style.left=Math.random()*100+"%";
+  b.style.animationDuration=(Math.random()*20+15)+"s";
+  document.body.appendChild(b);
+}
+
+/* Flowers */
+let flowers=["🌸","🌷","💮","🌺"];
+for(let i=0;i<8;i++){
+  let f=document.createElement("div");
+  f.className="flower";
+  f.innerHTML=flowers[Math.floor(Math.random()*flowers.length)];
+  f.style.left=Math.random()*100+"%";
+  f.style.animationDuration=(Math.random()*20+15)+"s";
+  document.body.appendChild(f);
+}
+
+/* Particle Grid */
+const canvas=document.getElementById("grid");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+for(let i=0;i<60;i++){
+  particles.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    size:2
+  });
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="#ffffff20";
+  particles.forEach(p=>{
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+    ctx.fill();
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+
+</body>
+</html>
