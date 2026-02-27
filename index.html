@@ -297,46 +297,60 @@ for(let i=0;i<15;i++){
   document.body.appendChild(b);
 }
 
-/* ================= TOAST ================= */
+/* ================= ORDER TOAST ONLY ================= */
 
-const names=["Mxxy","Ployya","Namtanx","Kaimookk","Jxmmy","Ningg"];
-const reviews=["ยอดขึ้นเร็วมากค่ะ 👍","ดันแล้วติดฟีดจริง","ผู้ติดตามเพิ่มเห็นชัด","บริการเร็วมาก"];
-const statuses=["ชำระเงินแล้ว","กำลังดำเนินการ","เสร็จงาน"];
+const statuses = [
+  "ชำระเงินแล้ว",
+  "กำลังดำเนินการ",
+  "เสร็จงาน"
+];
 
-function mask(name){
-  return name[0]+"***"+name[name.length-1];
+function generateOrderID(){
+  let d = new Date();
+  return "FF-" +
+    d.getFullYear().toString().slice(2) +
+    String(d.getMonth()+1).padStart(2,"0") +
+    String(d.getDate()).padStart(2,"0") +
+    "-" +
+    (Math.floor(Math.random()*9000)+1000);
 }
 
-function orderID(){
-  let d=new Date();
-  return "FF-"+d.getFullYear().toString().slice(2)
-  +String(d.getMonth()+1).padStart(2,"0")
-  +String(d.getDate()).padStart(2,"0")
-  +"-"+(Math.floor(Math.random()*9000)+1000);
+function maskOrderID(id){
+  // ปิดเลขท้าย
+  return id.slice(0, id.length-3) + "***";
 }
 
-function toast(html){
-  let t=document.createElement("div");
-  t.className="toast";
-  t.innerHTML=html;
-  document.body.appendChild(t);
+function showOrderToast(){
+  let fullID = generateOrderID();
+  let maskedID = maskOrderID(fullID);
 
-  setTimeout(()=>{t.style.opacity="0"},7000);
-  setTimeout(()=>{t.remove()},8000);
+  let status = statuses[Math.floor(Math.random()*statuses.length)];
+  let mins = Math.floor(Math.random()*20)+1;
+
+  const toast = document.createElement("div");
+  toast.className="toast";
+  toast.innerHTML = `
+    <b>${maskedID}</b><br>
+    ${status}<br>
+    ${mins} นาทีที่แล้ว
+  `;
+
+  document.body.appendChild(toast);
+
+  setTimeout(()=>{
+    toast.style.opacity="0";
+    toast.style.transform="translateY(10px)";
+  },7000);
+
+  setTimeout(()=>{
+    toast.remove();
+  },8000);
 }
 
+/* ขึ้นทุก 18 วิ */
 setInterval(()=>{
-  if(Math.random()>0.4){
-    toast(`<b>${orderID()}</b><br>
-    ${statuses[Math.floor(Math.random()*statuses.length)]}<br>
-    ${Math.floor(Math.random()*20)+1} นาทีที่แล้ว`);
-  }else{
-    let n=names[Math.floor(Math.random()*names.length)];
-    toast(`<b>${mask(n)}</b><br>
-    รีวิวล่าสุด ${Math.floor(Math.random()*20)+1} นาทีที่แล้ว<br>
-    "${reviews[Math.floor(Math.random()*reviews.length)]}"`);
-  }
-},20000);
+  showOrderToast();
+},18000);
 
 </script>
 </body>
