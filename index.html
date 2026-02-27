@@ -152,6 +152,40 @@ h1{
   box-shadow:0 0 25px rgba(200,160,255,.6);
   transition:all .6s ease;
 }
+.reviewBubble{
+  position:fixed;
+  bottom:-120px;
+  left:50%;
+  transform:translateX(-50%);
+  max-width:260px;
+  padding:14px 18px;
+  background:linear-gradient(145deg,#ff9ed6,#caa6ff);
+  color:white;
+  border-radius:30px;
+  font-size:13px;
+  box-shadow:0 8px 30px rgba(200,160,255,.5);
+  animation:reviewFloat 12s ease forwards;
+  opacity:.95;
+}
+
+@keyframes reviewFloat{
+  0%{
+    transform:translate(-50%,0) scale(.9);
+    opacity:0;
+  }
+  15%{
+    opacity:1;
+  }
+  80%{
+    opacity:1;
+  }
+  100%{
+    transform:translate(-50%,-85vh) scale(1.05);
+    opacity:0;
+  }
+}
+
+
 
 </style>
 </head>
@@ -200,6 +234,58 @@ h1{
 </div>
 
 <script>
+
+/* ================= REVIEW BUBBLE ================= */
+
+const reviewNames = [
+  "Mxxy","Ployya","Namtanx","Kaimookk",
+  "Faii","Jxmmy","Mayyy","Ningg","Praewa"
+];
+
+const reviewMessages = [
+  "แอดใจดีมากแถมเยอะมาก 💗",
+  "ยอดขึ้นจริงแบบไม่คิดว่าจะเร็วขนาดนี้",
+  "บริการดีมากค่ะ รอบนี้สั่งอีกแน่นอน",
+  "ระบบไวมาก ไม่ต้องรอเลย",
+  "แอดตอบเร็วมาก ดูแลดีสุด ๆ",
+  "เพิ่มผู้ติดตามแล้วคนทักมาขายของได้เลย",
+  "ราคาดี คุณภาพดี ชอบมากค่ะ"
+];
+
+function maskReviewName(name){
+  return name[0] + "***" + name[name.length-1];
+}
+
+function createReviewBubble(){
+
+  const name = reviewNames[Math.floor(Math.random()*reviewNames.length)];
+  const message = reviewMessages[Math.floor(Math.random()*reviewMessages.length)];
+
+  const bubble = document.createElement("div");
+  bubble.className = "reviewBubble";
+
+  bubble.innerHTML = `
+    <b>${maskReviewName(name)}</b><br>
+    ${message}
+  `;
+
+  document.body.appendChild(bubble);
+
+  setTimeout(()=>{
+    bubble.remove();
+  },12000);
+}
+
+/* เริ่มดีเลย์ก่อนครั้งแรก */
+setTimeout(()=>{
+  createReviewBubble();
+},15000);
+
+/* ขึ้นทุก 25-40 วิ */
+setInterval(()=>{
+  createReviewBubble();
+}, Math.random()*15000 + 25000);
+
 
 /* fade in */
 window.onload=()=>document.getElementById("content").classList.add("show");
