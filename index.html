@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Friend Follow | แพลตฟอร์มดันยอดอัตโนมัติ</title>
+<title>Friend Follow | ระบบดันยอดอัตโนมัติ</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&display=swap" rel="stylesheet">
 
@@ -27,7 +27,6 @@ body{
   color:white;
 }
 
-/* Light auto */
 @media (prefers-color-scheme: light){
   body{
     background:linear-gradient(135deg,#ffe6f6,#eaf6ff,#f3e8ff);
@@ -39,10 +38,9 @@ canvas{
   position:absolute;
   top:0;
   left:0;
-  z-index:-2;
+  z-index:-3;
 }
 
-/* container */
 .container{
   max-width:900px;
   opacity:0;
@@ -54,14 +52,13 @@ canvas{
   transform:translateY(0);
 }
 
-/* 3D Logo */
 .logo-scene{
   perspective:800px;
 }
 .logo{
   width:110px;
   border-radius:28px;
-  animation:spin 10s linear infinite;
+  animation:spin 12s linear infinite;
   box-shadow:0 0 40px rgba(200,160,255,.6);
 }
 @keyframes spin{
@@ -70,7 +67,6 @@ canvas{
 }
 
 h1{
-  margin-top:15px;
   font-size:30px;
   font-weight:700;
   background:linear-gradient(90deg,var(--pink),var(--blue),var(--purple));
@@ -86,11 +82,10 @@ h1{
 
 .tagline{
   margin-top:10px;
-  line-height:1.8;
   font-size:15px;
+  line-height:1.8;
 }
 
-/* platform cards */
 .platforms{
   margin-top:25px;
   display:flex;
@@ -108,18 +103,12 @@ h1{
   box-shadow:0 0 20px rgba(200,160,255,.3);
 }
 
-.card h3{
-  margin:0 0 6px 0;
-  font-weight:600;
-}
-
 .number{
   font-size:24px;
   font-weight:bold;
   color:var(--pink);
 }
 
-/* reason section */
 .reason{
   margin-top:25px;
   font-size:14px;
@@ -127,16 +116,43 @@ h1{
   line-height:1.7;
 }
 
-/* floating hearts */
-.heart{
+/* bubble */
+.bubble{
   position:absolute;
-  font-size:13px;
-  animation:floatUp 4s linear forwards;
+  bottom:-100px;
+  border-radius:50%;
+  opacity:.12;
+  background:linear-gradient(145deg,var(--pink),var(--purple));
+  animation:floatUp linear infinite;
 }
+
 @keyframes floatUp{
-  from{transform:translateY(0); opacity:1;}
-  to{transform:translateY(-150px); opacity:0;}
+  from{transform:translateY(0);}
+  to{transform:translateY(-120vh);}
 }
+
+/* flower */
+.flower{
+  position:absolute;
+  font-size:18px;
+  opacity:.6;
+  animation:floatUp linear infinite;
+}
+
+/* toast */
+.toast{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:linear-gradient(135deg,#ff9ed6,#8fd3ff,#caa6ff);
+  color:white;
+  padding:14px 18px;
+  border-radius:18px;
+  font-size:13px;
+  box-shadow:0 0 25px rgba(200,160,255,.6);
+  transition:all .6s ease;
+}
+
 </style>
 </head>
 <body>
@@ -158,41 +174,37 @@ h1{
 
   <div class="platforms">
     <div class="card">
-      <h3>TikTok</h3>
-      <div>ขายแล้ววันนี้</div>
+      TikTok<br>
       <div class="number" id="tiktok">0</div>
-      <div>ออเดอร์</div>
+      ออเดอร์วันนี้
     </div>
 
     <div class="card">
-      <h3>Instagram</h3>
-      <div>ขายแล้ววันนี้</div>
+      Instagram<br>
       <div class="number" id="ig">0</div>
-      <div>ออเดอร์</div>
+      ออเดอร์วันนี้
     </div>
 
     <div class="card">
-      <h3>Facebook</h3>
-      <div>ขายแล้ววันนี้</div>
+      Facebook<br>
       <div class="number" id="fb">0</div>
-      <div>ออเดอร์</div>
+      ออเดอร์วันนี้
     </div>
   </div>
 
   <div class="reason">
     <b>ทำไมต้องใช้บริการกับเรา ?</b><br>
-    ระบบทำงานอัตโนมัติรวดเร็ว • ปลอดภัยต่อบัญชี • ไม่มีหลุด<br>
-    รองรับทุกแพลตฟอร์มยอดนิยม • เช็คสถานะได้ตลอดเวลา
+    ระบบทำงานรวดเร็ว • ปลอดภัย • เช็คสถานะได้ตลอดเวลา
   </div>
 
 </div>
 
 <script>
 
-/* show */
+/* fade in */
 window.onload=()=>document.getElementById("content").classList.add("show");
 
-/* ================= NETWORK ================= */
+/* ================= AI NETWORK ================= */
 
 const canvas=document.getElementById("network");
 const ctx=canvas.getContext("2d");
@@ -211,14 +223,11 @@ for(let i=0;i<40;i++){
 
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
-
   nodes.forEach(n=>{
     n.x+=n.vx;
     n.y+=n.vy;
-
     if(n.x<0||n.x>canvas.width) n.vx*=-1;
     if(n.y<0||n.y>canvas.height) n.vy*=-1;
-
     ctx.beginPath();
     ctx.arc(n.x,n.y,2,0,Math.PI*2);
     ctx.fillStyle="#ffffff40";
@@ -247,117 +256,87 @@ draw();
 /* ================= DAILY LOCK ================= */
 
 function getDailySeedNumber(offset){
-  const today = new Date().toISOString().slice(0,10);
-  let hash = 0;
-  for (let i = 0; i < today.length; i++) {
-    hash = today.charCodeAt(i) + ((hash << 5) - hash);
+  const today=new Date().toISOString().slice(0,10);
+  let hash=0;
+  for(let i=0;i<today.length;i++){
+    hash=today.charCodeAt(i)+((hash<<5)-hash);
   }
-  return Math.abs(hash + offset);
+  return Math.abs(hash+offset);
 }
 
 function getDailyBase(max){
-  return (getDailySeedNumber(max) % max);
+  return getDailySeedNumber(max)%max;
 }
 
-document.getElementById("tiktok").innerText = getDailyBase(180)+80;
-document.getElementById("ig").innerText = getDailyBase(150)+60;
-document.getElementById("fb").innerText = getDailyBase(120)+40;
+document.getElementById("tiktok").innerText=getDailyBase(180)+80;
+document.getElementById("ig").innerText=getDailyBase(150)+60;
+document.getElementById("fb").innerText=getDailyBase(120)+40;
 
-/* ================= TOAST SYSTEM ================= */
+/* ================= FLOWERS ================= */
 
-const customerNames=["Mxxy","Ployya","Namtanx","Kaimookk","Faii","Jxmmy","Mayyy","Ningg"];
-const reviewTexts=[
-"ยอดขึ้นเร็วมากค่ะ 👍",
-"ดันแล้วคลิปติดฟีดจริง",
-"ผู้ติดตามเพิ่มแบบเห็นได้เลย",
-"ระบบเร็วมาก ไม่ต้องรอนาน",
-"สั่งรอบสองแล้วค่ะ"
-];
+const flowers=["🌸","🌷","💮","🌺"];
+for(let i=0;i<10;i++){
+  let f=document.createElement("div");
+  f.className="flower";
+  f.innerText=flowers[Math.floor(Math.random()*flowers.length)];
+  f.style.left=Math.random()*100+"%";
+  f.style.animationDuration=(Math.random()*20+15)+"s";
+  document.body.appendChild(f);
+}
+
+/* ================= BUBBLES ================= */
+
+for(let i=0;i<15;i++){
+  let b=document.createElement("div");
+  b.className="bubble";
+  let size=Math.random()*60+20;
+  b.style.width=size+"px";
+  b.style.height=size+"px";
+  b.style.left=Math.random()*100+"%";
+  b.style.animationDuration=(Math.random()*25+15)+"s";
+  document.body.appendChild(b);
+}
+
+/* ================= TOAST ================= */
+
+const names=["Mxxy","Ployya","Namtanx","Kaimookk","Jxmmy","Ningg"];
+const reviews=["ยอดขึ้นเร็วมากค่ะ 👍","ดันแล้วติดฟีดจริง","ผู้ติดตามเพิ่มเห็นชัด","บริการเร็วมาก"];
 const statuses=["ชำระเงินแล้ว","กำลังดำเนินการ","เสร็จงาน"];
 
-function maskName(name){
+function mask(name){
   return name[0]+"***"+name[name.length-1];
 }
 
-function randomMinutes(){
-  return Math.floor(Math.random()*30)+1;
+function orderID(){
+  let d=new Date();
+  return "FF-"+d.getFullYear().toString().slice(2)
+  +String(d.getMonth()+1).padStart(2,"0")
+  +String(d.getDate()).padStart(2,"0")
+  +"-"+(Math.floor(Math.random()*9000)+1000);
 }
 
-function generateOrderID(){
-  const now=new Date();
-  const y=now.getFullYear().toString().slice(2);
-  const m=String(now.getMonth()+1).padStart(2,'0');
-  const d=String(now.getDate()).padStart(2,'0');
-  const r=Math.floor(Math.random()*9000)+1000;
-  return `FF-${y}${m}${d}-${r}`;
+function toast(html){
+  let t=document.createElement("div");
+  t.className="toast";
+  t.innerHTML=html;
+  document.body.appendChild(t);
+
+  setTimeout(()=>{t.style.opacity="0"},7000);
+  setTimeout(()=>{t.remove()},8000);
 }
 
-function showToast(html){
-  const toast=document.createElement("div");
-  toast.className="toast";
-  toast.innerHTML=html;
-  document.body.appendChild(toast);
-
-  setTimeout(()=>{
-    toast.style.opacity="0";
-    toast.style.transform="translateY(10px)";
-  },7000);
-
-  setTimeout(()=>{
-    toast.remove();
-  },8000);
-}
-
-function randomOrder(){
-  const orderID=generateOrderID();
-  const status=statuses[Math.floor(Math.random()*statuses.length)];
-  const mins=randomMinutes();
-
-  showToast(`
-    <b>${orderID}</b><br>
-    ${status}<br>
-    ${mins} นาทีที่แล้ว
-  `);
-}
-
-function randomReview(){
-  const name=customerNames[Math.floor(Math.random()*customerNames.length)];
-  const review=reviewTexts[Math.floor(Math.random()*reviewTexts.length)];
-  const mins=randomMinutes();
-
-  showToast(`
-    <b>${maskName(name)}</b><br>
-    รีวิวล่าสุด ${mins} นาทีที่แล้ว<br>
-    "${review}"
-  `);
-}
-
-/* toast every 20 sec */
 setInterval(()=>{
   if(Math.random()>0.4){
-    randomOrder();
+    toast(`<b>${orderID()}</b><br>
+    ${statuses[Math.floor(Math.random()*statuses.length)]}<br>
+    ${Math.floor(Math.random()*20)+1} นาทีที่แล้ว`);
   }else{
-    randomReview();
+    let n=names[Math.floor(Math.random()*names.length)];
+    toast(`<b>${mask(n)}</b><br>
+    รีวิวล่าสุด ${Math.floor(Math.random()*20)+1} นาทีที่แล้ว<br>
+    "${reviews[Math.floor(Math.random()*reviews.length)]}"`);
   }
 },20000);
-
-/* toast style */
-const style=document.createElement("style");
-style.innerHTML=`
-.toast{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  background:linear-gradient(135deg,#ff9ed6,#8fd3ff,#caa6ff);
-  color:white;
-  padding:14px 18px;
-  border-radius:18px;
-  font-size:13px;
-  box-shadow:0 0 25px rgba(200,160,255,.6);
-  transition:all .6s ease;
-}
-`;
-document.head.appendChild(style);
 
 </script>
 </body>
