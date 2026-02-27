@@ -52,9 +52,6 @@ canvas{
   transform:translateY(0);
 }
 
-.logo-scene{
-  perspective:800px;
-}
 .logo{
   width:110px;
   border-radius:28px;
@@ -75,15 +72,7 @@ h1{
   animation:shimmer 4s infinite;
 }
 @keyframes shimmer{
-  0%{filter:brightness(1)}
-  50%{filter:brightness(1.4)}
-  100%{filter:brightness(1)}
-}
-
-.tagline{
-  margin-top:10px;
-  font-size:15px;
-  line-height:1.8;
+  50%{filter:brightness(1.4);}
 }
 
 .platforms{
@@ -110,33 +99,26 @@ h1{
 }
 
 .reason{
-  margin-top:25px;
+  margin-top:20px;
   font-size:14px;
   opacity:.9;
-  line-height:1.7;
 }
 
-/* bubble */
-.bubble{
-  position:absolute;
-  bottom:-100px;
-  border-radius:50%;
-  opacity:.12;
-  background:linear-gradient(145deg,var(--pink),var(--purple));
-  animation:floatUp linear infinite;
+/* review bubble */
+.reviewBubble{
+  position:fixed;
+  bottom:-120px;
+  left:50%;
+  transform:translateX(-50%);
+  background:linear-gradient(145deg,#ff9ed6,#caa6ff);
+  padding:14px 18px;
+  border-radius:30px;
+  font-size:13px;
+  animation:floatReview 12s ease forwards;
 }
 
-@keyframes floatUp{
-  from{transform:translateY(0);}
-  to{transform:translateY(-120vh);}
-}
-
-/* flower */
-.flower{
-  position:absolute;
-  font-size:18px;
-  opacity:.6;
-  animation:floatUp linear infinite;
+@keyframes floatReview{
+  100%{transform:translate(-50%,-85vh); opacity:0;}
 }
 
 /* toast */
@@ -145,298 +127,144 @@ h1{
   bottom:20px;
   right:20px;
   background:linear-gradient(135deg,#ff9ed6,#8fd3ff,#caa6ff);
-  color:white;
   padding:14px 18px;
   border-radius:18px;
   font-size:13px;
-  box-shadow:0 0 25px rgba(200,160,255,.6);
-  transition:all .6s ease;
-}
-.reviewBubble{
-  position:fixed;
-  bottom:-120px;
-  left:50%;
-  transform:translateX(-50%);
-  max-width:260px;
-  padding:14px 18px;
-  background:linear-gradient(145deg,#ff9ed6,#caa6ff);
-  color:white;
-  border-radius:30px;
-  font-size:13px;
-  box-shadow:0 8px 30px rgba(200,160,255,.5);
-  animation:reviewFloat 12s ease forwards;
-  opacity:.95;
+  transition:.6s;
 }
 
-@keyframes reviewFloat{
-  0%{
-    transform:translate(-50%,0) scale(.9);
-    opacity:0;
-  }
-  15%{
-    opacity:1;
-  }
-  80%{
-    opacity:1;
-  }
-  100%{
-    transform:translate(-50%,-85vh) scale(1.05);
-    opacity:0;
-  }
+.flower,.bubble{
+  position:absolute;
+  animation:floatBg linear infinite;
 }
-
-
-
+@keyframes floatBg{
+  100%{transform:translateY(-120vh);}
+}
 </style>
 </head>
 <body>
 
 <canvas id="network"></canvas>
 
+<audio id="popSound" preload="auto">
+<source src="https://assets.mixkit.co/sfx/preview/mixkit-bubble-pop-1993.mp3">
+</audio>
+
+<audio id="dingSound" preload="auto">
+<source src="https://assets.mixkit.co/sfx/preview/mixkit-positive-interface-beep-221.mp3">
+</audio>
+
 <div class="container" id="content">
 
-  <div class="logo-scene">
-    <img src="https://raw.githubusercontent.com/friendfollowofficial/about/a57288448586e9acebdef505ff8397bd609be80b/logo.png" class="logo">
-  </div>
+<img src="https://raw.githubusercontent.com/friendfollowofficial/about/a57288448586e9acebdef505ff8397bd609be80b/logo.png" class="logo">
 
-  <h1>Friend Follow</h1>
+<h1>Friend Follow</h1>
 
-  <div class="tagline">
-    ระบบดันยอดอัตโนมัติ<br>
-    เพิ่มผู้ติดตาม • ดันคลิปฟีด • เพิ่มหัวใจ
-  </div>
+<div class="platforms">
+<div class="card">TikTok<br><div class="number" id="tiktok"></div>ออเดอร์วันนี้</div>
+<div class="card">Instagram<br><div class="number" id="ig"></div>ออเดอร์วันนี้</div>
+<div class="card">Facebook<br><div class="number" id="fb"></div>ออเดอร์วันนี้</div>
+</div>
 
-  <div class="platforms">
-    <div class="card">
-      TikTok<br>
-      <div class="number" id="tiktok">0</div>
-      ออเดอร์วันนี้
-    </div>
-
-    <div class="card">
-      Instagram<br>
-      <div class="number" id="ig">0</div>
-      ออเดอร์วันนี้
-    </div>
-
-    <div class="card">
-      Facebook<br>
-      <div class="number" id="fb">0</div>
-      ออเดอร์วันนี้
-    </div>
-  </div>
-
-  <div class="reason">
-    <b>ทำไมต้องใช้บริการกับเรา ?</b><br>
-    ระบบทำงานรวดเร็ว • ปลอดภัย • เช็คสถานะได้ตลอดเวลา
-  </div>
+<div class="reason">
+ระบบดันยอดอัตโนมัติ • ปลอดภัย • ให้บริการ 24 ชม.
+</div>
 
 </div>
 
 <script>
 
-/* ================= REVIEW BUBBLE ================= */
-
-const reviewNames = [
-  "Mxxy","Ployya","Namtanx","Kaimookk",
-  "Faii","Jxmmy","Mayyy","Ningg","Praewa"
-];
-
-const reviewMessages = [
-  "แอดใจดีมากแถมเยอะมาก 💗",
-  "ยอดขึ้นจริงแบบไม่คิดว่าจะเร็วขนาดนี้",
-  "บริการดีมากค่ะ รอบนี้สั่งอีกแน่นอน",
-  "ระบบไวมาก ไม่ต้องรอเลย",
-  "แอดตอบเร็วมาก ดูแลดีสุด ๆ",
-  "เพิ่มผู้ติดตามแล้วคนทักมาขายของได้เลย",
-  "ราคาดี คุณภาพดี ชอบมากค่ะ"
-];
-
-function maskReviewName(name){
-  return name[0] + "***" + name[name.length-1];
-}
-
-function createReviewBubble(){
-
-  const name = reviewNames[Math.floor(Math.random()*reviewNames.length)];
-  const message = reviewMessages[Math.floor(Math.random()*reviewMessages.length)];
-
-  const bubble = document.createElement("div");
-  bubble.className = "reviewBubble";
-
-  bubble.innerHTML = `
-    <b>${maskReviewName(name)}</b><br>
-    ${message}
-  `;
-
-  document.body.appendChild(bubble);
-
-  setTimeout(()=>{
-    bubble.remove();
-  },12000);
-}
-
-/* เริ่มดีเลย์ก่อนครั้งแรก */
-setTimeout(()=>{
-  createReviewBubble();
-},15000);
-
-/* ขึ้นทุก 25-40 วิ */
-setInterval(()=>{
-  createReviewBubble();
-}, Math.random()*15000 + 25000);
-
-
 /* fade in */
 window.onload=()=>document.getElementById("content").classList.add("show");
 
-/* ================= AI NETWORK ================= */
+/* daily lock */
+function seed(max){
+const d=new Date().toISOString().slice(0,10);
+let h=0;
+for(let i=0;i<d.length;i++){h=d.charCodeAt(i)+((h<<5)-h);}
+return Math.abs(h%max);
+}
+tiktok.innerText=seed(180)+80;
+ig.innerText=seed(150)+60;
+fb.innerText=seed(120)+40;
 
-const canvas=document.getElementById("network");
+/* AI network */
+const canvas=network;
 const ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+let nodes=[...Array(40)].map(()=>({
+x:Math.random()*canvas.width,
+y:Math.random()*canvas.height,
+vx:(Math.random()-0.5)*0.5,
+vy:(Math.random()-0.5)*0.5
+}));
+(function draw(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+nodes.forEach(n=>{
+n.x+=n.vx;n.y+=n.vy;
+if(n.x<0||n.x>canvas.width)n.vx*=-1;
+if(n.y<0||n.y>canvas.height)n.vy*=-1;
+ctx.beginPath();ctx.arc(n.x,n.y,2,0,Math.PI*2);
+ctx.fillStyle="#ffffff40";ctx.fill();
+});
+requestAnimationFrame(draw);
+})();
 
-let nodes=[];
-for(let i=0;i<40;i++){
-  nodes.push({
-    x:Math.random()*canvas.width,
-    y:Math.random()*canvas.height,
-    vx:(Math.random()-0.5)*0.5,
-    vy:(Math.random()-0.5)*0.5
-  });
-}
-
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  nodes.forEach(n=>{
-    n.x+=n.vx;
-    n.y+=n.vy;
-    if(n.x<0||n.x>canvas.width) n.vx*=-1;
-    if(n.y<0||n.y>canvas.height) n.vy*=-1;
-    ctx.beginPath();
-    ctx.arc(n.x,n.y,2,0,Math.PI*2);
-    ctx.fillStyle="#ffffff40";
-    ctx.fill();
-  });
-
-  for(let i=0;i<nodes.length;i++){
-    for(let j=i+1;j<nodes.length;j++){
-      let dx=nodes[i].x-nodes[j].x;
-      let dy=nodes[i].y-nodes[j].y;
-      let dist=Math.sqrt(dx*dx+dy*dy);
-      if(dist<120){
-        ctx.beginPath();
-        ctx.moveTo(nodes[i].x,nodes[i].y);
-        ctx.lineTo(nodes[j].x,nodes[j].y);
-        ctx.strokeStyle="#ffffff20";
-        ctx.stroke();
-      }
-    }
-  }
-
-  requestAnimationFrame(draw);
-}
-draw();
-
-/* ================= DAILY LOCK ================= */
-
-function getDailySeedNumber(offset){
-  const today=new Date().toISOString().slice(0,10);
-  let hash=0;
-  for(let i=0;i<today.length;i++){
-    hash=today.charCodeAt(i)+((hash<<5)-hash);
-  }
-  return Math.abs(hash+offset);
-}
-
-function getDailyBase(max){
-  return getDailySeedNumber(max)%max;
-}
-
-document.getElementById("tiktok").innerText=getDailyBase(180)+80;
-document.getElementById("ig").innerText=getDailyBase(150)+60;
-document.getElementById("fb").innerText=getDailyBase(120)+40;
-
-/* ================= FLOWERS ================= */
-
-const flowers=["🌸","🌷","💮","🌺"];
+/* flowers + bubbles */
+const flowers=["🌸","🌷","🌺"];
 for(let i=0;i<10;i++){
-  let f=document.createElement("div");
-  f.className="flower";
-  f.innerText=flowers[Math.floor(Math.random()*flowers.length)];
-  f.style.left=Math.random()*100+"%";
-  f.style.animationDuration=(Math.random()*20+15)+"s";
-  document.body.appendChild(f);
+let f=document.createElement("div");
+f.className="flower";
+f.innerText=flowers[Math.floor(Math.random()*flowers.length)];
+f.style.left=Math.random()*100+"%";
+f.style.animationDuration=(Math.random()*20+15)+"s";
+document.body.appendChild(f);
 }
-
-/* ================= BUBBLES ================= */
-
 for(let i=0;i<15;i++){
-  let b=document.createElement("div");
-  b.className="bubble";
-  let size=Math.random()*60+20;
-  b.style.width=size+"px";
-  b.style.height=size+"px";
-  b.style.left=Math.random()*100+"%";
-  b.style.animationDuration=(Math.random()*25+15)+"s";
-  document.body.appendChild(b);
+let b=document.createElement("div");
+b.className="bubble";
+let size=Math.random()*60+20;
+b.style.width=size+"px";
+b.style.height=size+"px";
+b.style.left=Math.random()*100+"%";
+b.style.background="linear-gradient(145deg,#ff9ed6,#caa6ff)";
+b.style.opacity=".12";
+b.style.animationDuration=(Math.random()*25+15)+"s";
+document.body.appendChild(b);
 }
 
-/* ================= ORDER TOAST ONLY ================= */
-
-const statuses = [
-  "ชำระเงินแล้ว",
-  "กำลังดำเนินการ",
-  "เสร็จงาน"
-];
-
-function generateOrderID(){
-  let d = new Date();
-  return "FF-" +
-    d.getFullYear().toString().slice(2) +
-    String(d.getMonth()+1).padStart(2,"0") +
-    String(d.getDate()).padStart(2,"0") +
-    "-" +
-    (Math.floor(Math.random()*9000)+1000);
+/* review bubble */
+const names=["Mxxy","Ployya","Namtanx","Jxmmy"];
+const msgs=["แอดใจดีมากแถมเยอะมาก 💗","ยอดขึ้นเร็วจริง","บริการดีมากค่ะ","ระบบไวสุด ๆ"];
+function mask(n){return n[0]+"***"+n[n.length-1];}
+function review(){
+let b=document.createElement("div");
+b.className="reviewBubble";
+b.innerHTML="💗 <b>"+mask(names[Math.floor(Math.random()*names.length)])+"</b><br>"+msgs[Math.floor(Math.random()*msgs.length)];
+document.body.appendChild(b);
+popSound.volume=0.3;popSound.play();
+setTimeout(()=>b.remove(),12000);
 }
+setInterval(review,35000);
 
-function maskOrderID(id){
-  // ปิดเลขท้าย
-  return id.slice(0, id.length-3) + "***";
+/* order toast */
+const statuses=["ชำระเงินแล้ว","กำลังดำเนินการ","เสร็จงาน"];
+function orderID(){
+let d=new Date();
+return "FF-"+d.getFullYear().toString().slice(2)+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+(Math.floor(Math.random()*9000)+1000);
 }
-
-function showOrderToast(){
-  let fullID = generateOrderID();
-  let maskedID = maskOrderID(fullID);
-
-  let status = statuses[Math.floor(Math.random()*statuses.length)];
-  let mins = Math.floor(Math.random()*20)+1;
-
-  const toast = document.createElement("div");
-  toast.className="toast";
-  toast.innerHTML = `
-    <b>${maskedID}</b><br>
-    ${status}<br>
-    ${mins} นาทีที่แล้ว
-  `;
-
-  document.body.appendChild(toast);
-
-  setTimeout(()=>{
-    toast.style.opacity="0";
-    toast.style.transform="translateY(10px)";
-  },7000);
-
-  setTimeout(()=>{
-    toast.remove();
-  },8000);
+function maskOrder(id){return id.slice(0,id.length-3)+"***";}
+function order(){
+let t=document.createElement("div");
+t.className="toast";
+t.innerHTML="<b>"+maskOrder(orderID())+"</b><br>"+statuses[Math.floor(Math.random()*3)];
+document.body.appendChild(t);
+dingSound.volume=0.2;dingSound.play();
+setTimeout(()=>t.style.opacity="0",7000);
+setTimeout(()=>t.remove(),8000);
 }
-
-/* ขึ้นทุก 18 วิ */
-setInterval(()=>{
-  showOrderToast();
-},18000);
+setInterval(order,20000);
 
 </script>
 </body>
