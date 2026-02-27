@@ -200,7 +200,36 @@ h1{
   transform:scale(1.08);
 }
 
+/* effect ตอนเลขเพิ่ม */
+.number.bump{
+  animation:popNumber .5s ease;
+}
 
+@keyframes popNumber{
+  0%{transform:scale(1);}
+  50%{transform:scale(1.25);}
+  100%{transform:scale(1);}
+}
+
+/* +1 ลอย */
+.floatPlus{
+  position:absolute;
+  font-size:14px;
+  color:#ff9ed6;
+  animation:floatUpPlus 1.2s ease forwards;
+}
+
+@keyframes floatUpPlus{
+  0%{opacity:1; transform:translateY(0);}
+  100%{opacity:0; transform:translateY(-25px);}
+}
+
+
+
+
+
+
+  
 
   
 </style>
@@ -314,14 +343,7 @@ function draw(){
 }
 draw();
 
-/* ================= SMART DAILY GROWTH ================= */
-
-/*
-แนวคิด:
-- ทุกวันเริ่ม 0
-- เพิ่มตามช่วงเวลา
-- ทุกคนเห็นเลขเหมือนกัน
-*/
+/* ================= LIVE DAILY JUMP SYSTEM ================= */
 
 function todayKey(){
   return new Date().toISOString().slice(0,10);
@@ -332,29 +354,30 @@ function minutesSinceMidnight(){
   return now.getHours()*60 + now.getMinutes();
 }
 
-// max ต่อวัน
-const tkMax = 260;
-const igMax = 210;
-const fbMax = 160;
+// max ต่อวัน (TikTok เยอะสุด)
+const tkMax = 300;
+const igMax = 220;
+const fbMax = 150;
 
-function calculateValue(max){
-  
+let currentValues = {
+  tiktok: 0,
+  ig: 0,
+  fb: 0
+};
+
+function targetValue(max){
   const mins = minutesSinceMidnight();
-  
-  // สัดส่วนของวัน (0 - 1)
   let ratio = mins / 1440;
 
-  // ทำให้กลางวันพุ่งมากขึ้น
-  if(mins >= 600 && mins <= 960){ 
-    // 10:00 - 16:00 boost
-    ratio += 0.15;
+  // peak 10:00-16:00
+  if(mins >= 600 && mins <= 960){
+    ratio += 0.2;
   }
 
   if(ratio > 1) ratio = 1;
 
-  // base จากวัน (เพื่อให้แต่ละวันยอดไม่เท่ากัน)
-  let hash = 0;
   const key = todayKey();
+  let hash = 0;
   for(let i=0;i<key.length;i++){
     hash = key.charCodeAt(i) + ((hash<<5)-hash);
   }
@@ -364,15 +387,37 @@ function calculateValue(max){
   return Math.floor((max - 40 + dayFactor) * ratio);
 }
 
-function updateDailyNumbers(){
-  document.getElementById("tiktok").innerText = calculateValue(tkMax);
-  document.getElementById("ig").innerText = calculateValue(igMax);
-  document.getElementById("fb").innerText = calculateValue(fbMax);
+function jumpIncrease(id, max){
+
+  const target = targetValue(max);
+  const el = document.getElementById(id);
+
+  if(currentValues[id] < target){
+
+    currentValues[id]++;
+
+    el.innerText = currentValues[id];
+
+    // เด้ง
+    el.classList.add("bump");
+    setTimeout(()=>el.classList.remove("bump"),500);
+
+    // +1 ลอย
+    const plus = document.createElement("div");
+    plus.className="floatPlus";
+    plus.innerText="+1";
+    plus.style.left = el.getBoundingClientRect().left + "px";
+    plus.style.top = el.getBoundingClientRect().top + "px";
+    document.body.appendChild(plus);
+
+    setTimeout(()=>plus.remove(),1200);
+  }
 }
 
-// update ทุก 60 วิ
-updateDailyNumbers();
-setInterval(updateDailyNumbers, 60000);
+// interval ต่างกัน → TikTok ไวสุด
+setInterval(()=>jumpIncrease("tiktok", tkMax), 2500);
+setInterval(()=>jumpIncrease("ig", igMax), 4000);
+setInterval(()=>jumpIncrease("fb", fbMax), 6000);
 
 /* ================= FLOWERS ================= */
 
