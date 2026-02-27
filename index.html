@@ -224,9 +224,23 @@ h1{
   100%{opacity:0; transform:translateY(-25px);}
 }
 
+.logo{
+  animation:spin 12s linear infinite, glow 4s ease-in-out infinite;
+}
 
+@keyframes glow{
+  0%{ box-shadow:0 0 30px rgba(200,160,255,.4);}
+  50%{ box-shadow:0 0 70px rgba(255,158,214,.7);}
+  100%{ box-shadow:0 0 30px rgba(200,160,255,.4);}
+}
 
-
+  .number{
+  font-size:26px;
+  font-weight:bold;
+  background:linear-gradient(90deg,#ff9ed6,#ffd6f5,#8fd3ff);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
 
 
   
