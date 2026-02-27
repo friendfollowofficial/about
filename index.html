@@ -153,10 +153,69 @@ h1{
   transition:all .6s ease;
 }
 
+/* ================= REVIEW BUBBLE ================= */
+
+.reviewBubble{
+  position:fixed;
+  bottom:-140px;
+  left:50%;
+  transform:translateX(-50%);
+  background:linear-gradient(145deg,#ff9ed6,#caa6ff);
+  padding:18px 24px;
+  border-radius:40px;
+  font-size:14px;
+  box-shadow:0 20px 60px rgba(200,160,255,.8);
+  animation:floatReview 26s ease forwards;
+  max-width:320px;
+  opacity:1;
+}
+
+@keyframes floatReview{
+  0%{opacity:0;}
+  10%{opacity:1;}
+  80%{opacity:1;}
+  100%{
+    transform:translate(-50%,-85vh);
+    opacity:.95;
+  }
+}
+
+/* ================= FLOAT LINE BUTTON ================= */
+
+.lineFloat{
+  position:fixed;
+  bottom:25px;
+  right:25px;
+  padding:14px 22px;
+  border-radius:50px;
+  background:linear-gradient(135deg,#ff9ed6,#8fd3ff,#caa6ff);
+  color:white;
+  font-weight:600;
+  text-decoration:none;
+  box-shadow:0 20px 50px rgba(200,160,255,.5);
+  transition:.3s;
+  z-index:99;
+}
+.lineFloat:hover{
+  transform:scale(1.08);
+}
+
+
+
+  
 </style>
 </head>
 <body>
 
+<audio id="popSound">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-bubble-pop-1993.mp3">
+</audio>
+
+<audio id="dingSound">
+  <source src="https://assets.mixkit.co/sfx/preview/mixkit-positive-interface-beep-221.mp3">
+</audio>
+
+  
 <canvas id="network"></canvas>
 
 <div class="container" id="content">
@@ -330,6 +389,11 @@ function showOrderToast(){
   let mins = Math.floor(Math.random()*20)+1;
 
   const toast = document.createElement("div");
+
+
+
+
+  
   toast.className="toast";
   toast.innerHTML = `
     <b>${maskedID}</b><br>
@@ -338,6 +402,9 @@ function showOrderToast(){
   `;
 
   document.body.appendChild(toast);
+ document.getElementById("dingSound").volume = 0.25;
+ document.getElementById("dingSound").play();
+  
 
   setTimeout(()=>{
     toast.style.opacity="0";
@@ -353,6 +420,64 @@ function showOrderToast(){
 setInterval(()=>{
   showOrderToast();
 },18000);
+
+/* ================= REVIEW SYSTEM ================= */
+
+const reviewNames = [
+  "Mxxy","Ployya","Namtanx",
+  "Jxmmy","Praewa","Mildd","Faii"
+];
+
+const reviewMessages = [
+  "แอดใจดีมากแถมเยอะมาก 💗",
+  "ยอดขึ้นเร็วจริง",
+  "บริการดีมากค่ะ",
+  "ระบบไวสุด ๆ",
+  "เพิ่มแล้วคลิปติดฟีดทันที"
+];
+
+function maskName(name){
+  let visibleStart = 1;
+  let visibleEnd = Math.floor(Math.random()*2);
+  let masked = name.substring(0,visibleStart);
+  masked += "*".repeat(name.length-visibleStart-visibleEnd);
+  if(visibleEnd>0){
+    masked += name.substring(name.length-visibleEnd);
+  }
+  return masked;
+}
+
+function createReviewBubble(){
+
+  const bubble = document.createElement("div");
+  bubble.className="reviewBubble";
+
+  const randomName = reviewNames[Math.floor(Math.random()*reviewNames.length)];
+  const randomMsg = reviewMessages[Math.floor(Math.random()*reviewMessages.length)];
+
+  bubble.innerHTML = `
+    💖 <b>${maskName(randomName)}</b><br>
+    ${randomMsg}
+  `;
+
+  document.body.appendChild(bubble);
+
+  const pop = document.getElementById("popSound");
+  pop.volume = 0.3;
+  pop.play();
+
+  setTimeout(()=>{
+    bubble.remove();
+  },25000);
+}
+
+/* ทุก 50 วิ */
+setInterval(()=>{
+  createReviewBubble();
+},50000);
+
+
+  
 
 </script>
 </body>
