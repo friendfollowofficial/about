@@ -273,6 +273,160 @@ function draw(){
 }
 draw();
 
+/* ============================= */
+/* ===== DAILY LIVE COUNTER ==== */
+/* ============================= */
+
+function initDailyData(){
+  const today = new Date().toISOString().slice(0,10);
+  if(localStorage.getItem("ffDate") !== today){
+    localStorage.setItem("ffDate", today);
+    localStorage.setItem("ff_tk", Math.floor(Math.random()*120)+50);
+    localStorage.setItem("ff_ig", Math.floor(Math.random()*100)+40);
+    localStorage.setItem("ff_fb", Math.floor(Math.random()*80)+30);
+  }
+}
+initDailyData();
+
+function liveIncrease(key, elementId, max){
+  let el = document.getElementById(elementId);
+  let value = parseInt(localStorage.getItem(key));
+  el.innerText = value;
+
+  setInterval(()=>{
+    if(value < max){
+      value += Math.floor(Math.random()*3)+1;
+      if(value > max) value = max;
+      localStorage.setItem(key, value);
+      el.innerText = value;
+    }
+  }, Math.random()*40000 + 20000); // 20-60 วิ
+}
+
+liveIncrease("ff_tk","tiktok",300);
+liveIncrease("ff_ig","ig",280);
+liveIncrease("ff_fb","fb",250);
+
+
+/* ============================= */
+/* ===== TOAST SYSTEM ========== */
+/* ============================= */
+
+const customerNames = [
+  "Mxxy","Ployya","Namtanx","Kaimookk","Faii",
+  "Jxmmy","Iceee","Mayyy","Ningg","Praewa.x",
+  "Giftzy","Mildd","Peachh"
+];
+
+const reviewTexts = [
+  "ยอดขึ้นเร็วมากค่ะ 👍",
+  "ดันแล้วคลิปติดฟีดจริง",
+  "ผู้ติดตามเพิ่มแบบเห็นได้เลย",
+  "ระบบเร็วมาก ไม่ต้องรอนาน",
+  "สั่งรอบสองแล้วค่ะ",
+  "ปลอดภัย ไม่มีปัญหาบัญชี"
+];
+
+const statuses = [
+  "ชำระเงินแล้ว",
+  "กำลังดำเนินการ",
+  "เสร็จงาน"
+];
+
+function maskName(name){
+  if(name.length <= 2) return name[0]+"*";
+  return name[0] + "*".repeat(name.length-2) + name[name.length-1];
+}
+
+function randomMinutes(){
+  return Math.floor(Math.random()*30)+1;
+}
+
+function generateOrderID(){
+  const now = new Date();
+  const y = now.getFullYear().toString().slice(2);
+  const m = String(now.getMonth()+1).padStart(2,'0');
+  const d = String(now.getDate()).padStart(2,'0');
+  const r = Math.floor(Math.random()*9000)+1000;
+  return `FF-${y}${m}${d}-${r}`;
+}
+
+function showToast(html){
+  const toast = document.createElement("div");
+  toast.className = "toast";
+  toast.innerHTML = html;
+  document.body.appendChild(toast);
+
+  setTimeout(()=>{
+    toast.remove();
+  },6000);
+}
+
+/* Review popup */
+function randomReview(){
+  const name = customerNames[Math.floor(Math.random()*customerNames.length)];
+  const review = reviewTexts[Math.floor(Math.random()*reviewTexts.length)];
+  const mins = randomMinutes();
+
+  showToast(`
+    <b>${maskName(name)}</b><br>
+    รีวิวล่าสุด ${mins} นาทีที่แล้ว<br>
+    "${review}"
+  `);
+}
+
+/* Order popup */
+function randomOrder(){
+  const orderID = generateOrderID();
+  const status = statuses[Math.floor(Math.random()*statuses.length)];
+  const mins = randomMinutes();
+
+  showToast(`
+    <b>${orderID}</b><br>
+    ${status}<br>
+    ${mins} นาทีที่แล้ว
+  `);
+}
+
+/* random trigger */
+setInterval(()=>{
+  if(Math.random() > 0.5){
+    randomReview();
+  } else {
+    randomOrder();
+  }
+}, Math.random()*30000 + 25000); // 25-55 วิ
+
+
+/* ============================= */
+/* ===== TOAST STYLE ADD ======= */
+/* ============================= */
+
+const style = document.createElement("style");
+style.innerHTML = `
+.toast{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:linear-gradient(135deg,#ff9ed6,#8fd3ff,#caa6ff);
+  color:white;
+  padding:14px 18px;
+  border-radius:18px;
+  font-size:13px;
+  box-shadow:0 0 25px rgba(200,160,255,.6);
+  animation:toastIn .4s ease;
+}
+@keyframes toastIn{
+  from{transform:translateY(20px); opacity:0;}
+  to{transform:translateY(0); opacity:1;}
+}
+`;
+document.head.appendChild(style);
+
+
+
+  
+
 </script>
 </body>
 </html>
