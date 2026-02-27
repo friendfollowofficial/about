@@ -192,36 +192,8 @@ h1{
 /* show */
 window.onload=()=>document.getElementById("content").classList.add("show");
 
-/* animated counters */
-function animate(id, max){
-  let count=0;
-  let el=document.getElementById(id);
-  let interval=setInterval(()=>{
-    count+=Math.floor(Math.random()*5)+1;
-    if(count>=max){
-      count=max;
-      clearInterval(interval);
-    }
-    el.innerText=count;
-  },30);
-}
+/* ================= NETWORK ================= */
 
-animate("tiktok",Math.floor(Math.random()*80)+120);
-animate("ig",Math.floor(Math.random()*60)+90);
-animate("fb",Math.floor(Math.random()*40)+70);
-
-/* floating hearts */
-setInterval(()=>{
-  let heart=document.createElement("div");
-  heart.className="heart";
-  heart.innerHTML="💗 +1";
-  heart.style.left=Math.random()*window.innerWidth+"px";
-  heart.style.top=(window.innerHeight-100)+"px";
-  document.body.appendChild(heart);
-  setTimeout(()=>heart.remove(),4000);
-},1500);
-
-/* AI network canvas */
 const canvas=document.getElementById("network");
 const ctx=canvas.getContext("2d");
 canvas.width=window.innerWidth;
@@ -258,7 +230,6 @@ function draw(){
       let dx=nodes[i].x-nodes[j].x;
       let dy=nodes[i].y-nodes[j].y;
       let dist=Math.sqrt(dx*dx+dy*dy);
-
       if(dist<120){
         ctx.beginPath();
         ctx.moveTo(nodes[i].x,nodes[i].y);
@@ -273,69 +244,39 @@ function draw(){
 }
 draw();
 
-/* ============================= */
-/* ===== DAILY LIVE COUNTER ==== */
-/* ============================= */
+/* ================= DAILY LOCK ================= */
 
-function initDailyData(){
+function getDailySeedNumber(offset){
   const today = new Date().toISOString().slice(0,10);
-  if(localStorage.getItem("ffDate") !== today){
-    localStorage.setItem("ffDate", today);
-    localStorage.setItem("ff_tk", Math.floor(Math.random()*120)+50);
-    localStorage.setItem("ff_ig", Math.floor(Math.random()*100)+40);
-    localStorage.setItem("ff_fb", Math.floor(Math.random()*80)+30);
+  let hash = 0;
+  for (let i = 0; i < today.length; i++) {
+    hash = today.charCodeAt(i) + ((hash << 5) - hash);
   }
-}
-initDailyData();
-
-function liveIncrease(key, elementId, max){
-  let el = document.getElementById(elementId);
-  let value = parseInt(localStorage.getItem(key));
-  el.innerText = value;
-
-  setInterval(()=>{
-    if(value < max){
-      value += Math.floor(Math.random()*3)+1;
-      if(value > max) value = max;
-      localStorage.setItem(key, value);
-      el.innerText = value;
-    }
-  }, Math.random()*40000 + 20000); // 20-60 วิ
+  return Math.abs(hash + offset);
 }
 
-liveIncrease("ff_tk","tiktok",300);
-liveIncrease("ff_ig","ig",280);
-liveIncrease("ff_fb","fb",250);
+function getDailyBase(max){
+  return (getDailySeedNumber(max) % max);
+}
 
+document.getElementById("tiktok").innerText = getDailyBase(180)+80;
+document.getElementById("ig").innerText = getDailyBase(150)+60;
+document.getElementById("fb").innerText = getDailyBase(120)+40;
 
-/* ============================= */
-/* ===== TOAST SYSTEM ========== */
-/* ============================= */
+/* ================= TOAST SYSTEM ================= */
 
-const customerNames = [
-  "Mxxy","Ployya","Namtanx","Kaimookk","Faii",
-  "Jxmmy","Iceee","Mayyy","Ningg","Praewa.x",
-  "Giftzy","Mildd","Peachh"
+const customerNames=["Mxxy","Ployya","Namtanx","Kaimookk","Faii","Jxmmy","Mayyy","Ningg"];
+const reviewTexts=[
+"ยอดขึ้นเร็วมากค่ะ 👍",
+"ดันแล้วคลิปติดฟีดจริง",
+"ผู้ติดตามเพิ่มแบบเห็นได้เลย",
+"ระบบเร็วมาก ไม่ต้องรอนาน",
+"สั่งรอบสองแล้วค่ะ"
 ];
-
-const reviewTexts = [
-  "ยอดขึ้นเร็วมากค่ะ 👍",
-  "ดันแล้วคลิปติดฟีดจริง",
-  "ผู้ติดตามเพิ่มแบบเห็นได้เลย",
-  "ระบบเร็วมาก ไม่ต้องรอนาน",
-  "สั่งรอบสองแล้วค่ะ",
-  "ปลอดภัย ไม่มีปัญหาบัญชี"
-];
-
-const statuses = [
-  "ชำระเงินแล้ว",
-  "กำลังดำเนินการ",
-  "เสร็จงาน"
-];
+const statuses=["ชำระเงินแล้ว","กำลังดำเนินการ","เสร็จงาน"];
 
 function maskName(name){
-  if(name.length <= 2) return name[0]+"*";
-  return name[0] + "*".repeat(name.length-2) + name[name.length-1];
+  return name[0]+"***"+name[name.length-1];
 }
 
 function randomMinutes(){
@@ -343,43 +284,34 @@ function randomMinutes(){
 }
 
 function generateOrderID(){
-  const now = new Date();
-  const y = now.getFullYear().toString().slice(2);
-  const m = String(now.getMonth()+1).padStart(2,'0');
-  const d = String(now.getDate()).padStart(2,'0');
-  const r = Math.floor(Math.random()*9000)+1000;
+  const now=new Date();
+  const y=now.getFullYear().toString().slice(2);
+  const m=String(now.getMonth()+1).padStart(2,'0');
+  const d=String(now.getDate()).padStart(2,'0');
+  const r=Math.floor(Math.random()*9000)+1000;
   return `FF-${y}${m}${d}-${r}`;
 }
 
 function showToast(html){
-  const toast = document.createElement("div");
-  toast.className = "toast";
-  toast.innerHTML = html;
+  const toast=document.createElement("div");
+  toast.className="toast";
+  toast.innerHTML=html;
   document.body.appendChild(toast);
 
   setTimeout(()=>{
+    toast.style.opacity="0";
+    toast.style.transform="translateY(10px)";
+  },7000);
+
+  setTimeout(()=>{
     toast.remove();
-  },6000);
+  },8000);
 }
 
-/* Review popup */
-function randomReview(){
-  const name = customerNames[Math.floor(Math.random()*customerNames.length)];
-  const review = reviewTexts[Math.floor(Math.random()*reviewTexts.length)];
-  const mins = randomMinutes();
-
-  showToast(`
-    <b>${maskName(name)}</b><br>
-    รีวิวล่าสุด ${mins} นาทีที่แล้ว<br>
-    "${review}"
-  `);
-}
-
-/* Order popup */
 function randomOrder(){
-  const orderID = generateOrderID();
-  const status = statuses[Math.floor(Math.random()*statuses.length)];
-  const mins = randomMinutes();
+  const orderID=generateOrderID();
+  const status=statuses[Math.floor(Math.random()*statuses.length)];
+  const mins=randomMinutes();
 
   showToast(`
     <b>${orderID}</b><br>
@@ -388,22 +320,30 @@ function randomOrder(){
   `);
 }
 
-/* random trigger */
+function randomReview(){
+  const name=customerNames[Math.floor(Math.random()*customerNames.length)];
+  const review=reviewTexts[Math.floor(Math.random()*reviewTexts.length)];
+  const mins=randomMinutes();
+
+  showToast(`
+    <b>${maskName(name)}</b><br>
+    รีวิวล่าสุด ${mins} นาทีที่แล้ว<br>
+    "${review}"
+  `);
+}
+
+/* toast every 20 sec */
 setInterval(()=>{
-  if(Math.random() > 0.5){
-    randomReview();
-  } else {
+  if(Math.random()>0.4){
     randomOrder();
+  }else{
+    randomReview();
   }
-}, Math.random()*30000 + 25000); // 25-55 วิ
+},20000);
 
-
-/* ============================= */
-/* ===== TOAST STYLE ADD ======= */
-/* ============================= */
-
-const style = document.createElement("style");
-style.innerHTML = `
+/* toast style */
+const style=document.createElement("style");
+style.innerHTML=`
 .toast{
   position:fixed;
   bottom:20px;
@@ -414,18 +354,10 @@ style.innerHTML = `
   border-radius:18px;
   font-size:13px;
   box-shadow:0 0 25px rgba(200,160,255,.6);
-  animation:toastIn .4s ease;
-}
-@keyframes toastIn{
-  from{transform:translateY(20px); opacity:0;}
-  to{transform:translateY(0); opacity:1;}
+  transition:all .6s ease;
 }
 `;
 document.head.appendChild(style);
-
-
-
-  
 
 </script>
 </body>
