@@ -22,27 +22,13 @@ body{
   align-items:center;
   justify-content:center;
   text-align:center;
-  background:linear-gradient(135deg,#1a1022,#0e1a2a,#1b1230);
+  background:linear-gradient(135deg,#1e1330,#111c2c,#24163c);
   color:white;
-}
-
-@media (prefers-color-scheme: light){
-  body{
-    background:linear-gradient(135deg,#ffe6f6,#eaf6ff,#f3e8ff);
-    color:#333;
-  }
-}
-
-canvas{
-  position:absolute;
-  top:0;
-  left:0;
-  z-index:-3;
 }
 
 /* fade */
 .container{
-  max-width:850px;
+  max-width:900px;
   padding:20px;
   opacity:0;
   transform:translateY(20px);
@@ -57,8 +43,8 @@ canvas{
 .logo{
   width:120px;
   border-radius:30px;
-  animation:spin 18s linear infinite;
-  box-shadow:0 0 40px rgba(200,160,255,.7);
+  animation:spin 20s linear infinite;
+  box-shadow:0 0 45px rgba(200,160,255,.7);
 }
 @keyframes spin{
   from{transform:rotateY(0)}
@@ -72,13 +58,7 @@ h1{
   -webkit-text-fill-color:transparent;
 }
 
-.tagline{
-  margin-top:10px;
-  font-size:15px;
-  opacity:.9;
-}
-
-/* bubble stats (แทนสี่เหลี่ยม) */
+/* stat bubbles */
 .stats{
   margin-top:25px;
   display:flex;
@@ -87,23 +67,43 @@ h1{
   flex-wrap:wrap;
 }
 
-.statBubble{
+.stat{
   background:linear-gradient(145deg,#ff9ed6,#caa6ff);
-  padding:20px 25px;
-  border-radius:50px;
-  box-shadow:0 10px 30px rgba(200,160,255,.4);
-  min-width:150px;
+  padding:20px 30px;
+  border-radius:60px;
+  box-shadow:0 15px 40px rgba(200,160,255,.4);
+  min-width:160px;
 }
 
-.statNumber{
+.number{
   font-size:22px;
   font-weight:bold;
 }
 
+/* reason */
 .reason{
   margin-top:25px;
   font-size:14px;
   line-height:1.8;
+  opacity:.9;
+}
+
+/* floating LINE button */
+.lineFloat{
+  position:fixed;
+  bottom:25px;
+  right:25px;
+  padding:14px 22px;
+  border-radius:50px;
+  background:linear-gradient(135deg,#ff9ed6,#8fd3ff);
+  color:white;
+  font-weight:600;
+  text-decoration:none;
+  box-shadow:0 15px 40px rgba(200,160,255,.5);
+  transition:.3s;
+}
+.lineFloat:hover{
+  transform:scale(1.08);
 }
 
 /* review bubble */
@@ -113,63 +113,44 @@ h1{
   left:50%;
   transform:translateX(-50%);
   background:linear-gradient(145deg,#ff9ed6,#caa6ff);
-  padding:16px 22px;
+  padding:18px 24px;
   border-radius:40px;
   font-size:14px;
-  box-shadow:0 15px 40px rgba(200,160,255,.6);
-  animation:floatReview 18s ease forwards;
-  display:flex;
-  gap:10px;
+  box-shadow:0 20px 50px rgba(200,160,255,.7);
+  animation:floatReview 22s ease forwards;
 }
-
 @keyframes floatReview{
-  70%{opacity:1;}
-  100%{
-    transform:translate(-50%,-80vh);
-    opacity:.9;
-  }
+  80%{opacity:1;}
+  100%{transform:translate(-50%,-85vh);}
 }
 
 /* order toast */
 .toast{
   position:fixed;
-  bottom:25px;
+  bottom:100px;
   right:25px;
   background:linear-gradient(135deg,#8fd3ff,#caa6ff);
-  padding:15px 20px;
+  padding:14px 18px;
   border-radius:25px;
   font-size:13px;
   box-shadow:0 0 25px rgba(200,160,255,.6);
   transition:.6s;
 }
 
-/* line button */
-.lineBtn{
-  margin-top:25px;
-  display:inline-block;
-  padding:14px 28px;
-  border-radius:50px;
-  background:#00c300;
-  color:white;
-  font-weight:600;
-  text-decoration:none;
-  box-shadow:0 8px 25px rgba(0,195,0,.4);
-  transition:.3s;
+/* flowers */
+.flower,.bubble{
+  position:absolute;
+  animation:floatBg linear infinite;
 }
-.lineBtn:hover{
-  transform:scale(1.05);
+@keyframes floatBg{
+  100%{transform:translateY(-120vh);}
 }
 </style>
 </head>
 <body>
 
-<audio id="popSound" preload="auto">
-<source src="https://assets.mixkit.co/sfx/preview/mixkit-bubble-pop-1993.mp3">
-</audio>
-
-<audio id="dingSound" preload="auto">
-<source src="https://assets.mixkit.co/sfx/preview/mixkit-positive-interface-beep-221.mp3">
-</audio>
+<audio id="popSound"><source src="https://assets.mixkit.co/sfx/preview/mixkit-bubble-pop-1993.mp3"></audio>
+<audio id="dingSound"><source src="https://assets.mixkit.co/sfx/preview/mixkit-positive-interface-beep-221.mp3"></audio>
 
 <div class="container" id="content">
 
@@ -177,36 +158,30 @@ h1{
 
 <h1>Friend Follow</h1>
 
-<div class="tagline">
-ระบบดันยอดอัตโนมัติ • เพิ่มผู้ติดตาม • ดันคลิป • เพิ่มหัวใจ
-</div>
-
 <div class="stats">
-<div class="statBubble">TikTok<br><div class="statNumber" id="tk"></div></div>
-<div class="statBubble">Instagram<br><div class="statNumber" id="ig"></div></div>
-<div class="statBubble">Facebook<br><div class="statNumber" id="fb"></div></div>
+<div class="stat">TikTok<br><div class="number" id="tk"></div></div>
+<div class="stat">Instagram<br><div class="number" id="ig"></div></div>
+<div class="stat">Facebook<br><div class="number" id="fb"></div></div>
 </div>
 
 <div class="reason">
 <b>ทำไมต้องใช้บริการกับเรา?</b><br>
-✔ ระบบอัตโนมัติทำงานรวดเร็ว<br>
-✔ ปลอดภัยต่อบัญชี ไม่หลุด<br>
-✔ เช็คสถานะได้ตลอดเวลา<br>
-✔ ให้บริการต่อเนื่องทุกวัน 24 ชม.
+ระบบดันยอดอัตโนมัติทำงานรวดเร็ว - ปลอดภัย <br>
+เช็คสถานะได้ตลอดเวลา - ให้บริการทุกวัน 24 ชม.
 </div>
 
-<a href="https://line.me/R/ti/p/@geg4960w" class="lineBtn">
-ติดต่อแอดมิน Line : @geg4960w
+</div>
+
+<a href="https://line.me/R/ti/p/@geg4960w" class="lineFloat">
+ติดต่อแอดมิน
 </a>
-
-</div>
 
 <script>
 
 /* fade */
 window.onload=()=>content.classList.add("show");
 
-/* daily number lock */
+/* daily lock */
 function seed(max){
 let d=new Date().toISOString().slice(0,10);
 let h=0;
@@ -217,40 +192,53 @@ tk.innerText=seed(200)+100;
 ig.innerText=seed(150)+80;
 fb.innerText=seed(120)+60;
 
-/* review */
-const names=["Mxxy","Ployya","Namtanx","Jxmmy","Praewa","Mildd"];
-const msgs=[
-"แอดใจดีมากแถมเยอะมาก 💗",
-"ยอดขึ้นเร็วแบบไม่คิดว่าจะไวขนาดนี้",
-"บริการดีมาก สั่งซ้ำแน่นอน",
-"ระบบไวสุด ๆ ไม่มีสะดุด"
-];
-
-function mask(n){
-return n[0]+"***"+n[n.length-1];
+/* flowers */
+const flowers=["🌸","🌷","🌺"];
+for(let i=0;i<10;i++){
+let f=document.createElement("div");
+f.className="flower";
+f.innerText=flowers[Math.floor(Math.random()*flowers.length)];
+f.style.left=Math.random()*100+"%";
+f.style.animationDuration=(Math.random()*30+20)+"s";
+document.body.appendChild(f);
 }
 
+/* bubbles */
+for(let i=0;i<15;i++){
+let b=document.createElement("div");
+b.className="bubble";
+let size=Math.random()*60+20;
+b.style.width=size+"px";
+b.style.height=size+"px";
+b.style.left=Math.random()*100+"%";
+b.style.background="linear-gradient(145deg,#ff9ed6,#caa6ff)";
+b.style.opacity=".1";
+b.style.animationDuration=(Math.random()*40+30)+"s";
+document.body.appendChild(b);
+}
+
+/* review */
+const names=["Mxxy","Ployya","Jxmmy","Praewa","Namtanx"];
+const msgs=["แอดใจดีมากแถมเยอะมาก 💗","ยอดขึ้นเร็วจริง","บริการดีมากค่ะ","ระบบไวสุด ๆ"];
+function mask(n){return n[0]+"***"+n[n.length-1];}
 function review(){
 let div=document.createElement("div");
 div.className="reviewBubble";
-div.innerHTML=`💗 <b>${mask(names[Math.floor(Math.random()*names.length)])}</b><br>
-${msgs[Math.floor(Math.random()*msgs.length)]}`;
+div.innerHTML="💖 <b>"+mask(names[Math.floor(Math.random()*names.length)])+"</b><br>"+msgs[Math.floor(Math.random()*msgs.length)];
 document.body.appendChild(div);
-popSound.volume=0.3;
-popSound.play();
-setTimeout(()=>div.remove(),18000);
+popSound.volume=0.3;popSound.play();
+setTimeout(()=>div.remove(),20000);
 }
-setInterval(review,40000);
+setInterval(review,45000);
 
-/* order toast */
+/* order */
 function order(){
 let div=document.createElement("div");
 div.className="toast";
 div.innerHTML="<b>FF-******</b><br>กำลังดำเนินการ";
 document.body.appendChild(div);
-dingSound.volume=0.2;
-dingSound.play();
-setTimeout(()=>div.remove(),8000);
+dingSound.volume=0.2;dingSound.play();
+setTimeout(()=>div.remove(),9000);
 }
 setInterval(order,25000);
 
