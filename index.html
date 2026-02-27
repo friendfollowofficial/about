@@ -42,7 +42,8 @@ canvas{
 
 /* fade */
 .container{
-  max-width:900px;
+  max-width:850px;
+  padding:20px;
   opacity:0;
   transform:translateY(20px);
   transition:1.5s ease;
@@ -55,9 +56,9 @@ canvas{
 /* logo */
 .logo{
   width:120px;
-  border-radius:28px;
-  animation:spin 14s linear infinite;
-  box-shadow:0 0 40px rgba(200,160,255,.6);
+  border-radius:30px;
+  animation:spin 18s linear infinite;
+  box-shadow:0 0 40px rgba(200,160,255,.7);
 }
 @keyframes spin{
   from{transform:rotateY(0)}
@@ -66,62 +67,43 @@ canvas{
 
 h1{
   font-size:32px;
-  font-weight:700;
   background:linear-gradient(90deg,var(--pink),var(--blue),var(--purple));
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
-  animation:shimmer 4s infinite;
-}
-@keyframes shimmer{
-  50%{filter:brightness(1.4);}
 }
 
 .tagline{
+  margin-top:10px;
   font-size:15px;
-  margin-top:8px;
+  opacity:.9;
 }
 
-.platforms{
+/* bubble stats (แทนสี่เหลี่ยม) */
+.stats{
   margin-top:25px;
   display:flex;
-  gap:20px;
   justify-content:center;
+  gap:25px;
   flex-wrap:wrap;
 }
 
-.card{
-  background:rgba(255,255,255,.05);
-  backdrop-filter:blur(12px);
-  padding:18px 20px;
-  border-radius:20px;
-  width:220px;
-  box-shadow:0 0 20px rgba(200,160,255,.3);
+.statBubble{
+  background:linear-gradient(145deg,#ff9ed6,#caa6ff);
+  padding:20px 25px;
+  border-radius:50px;
+  box-shadow:0 10px 30px rgba(200,160,255,.4);
+  min-width:150px;
 }
 
-.number{
-  font-size:24px;
+.statNumber{
+  font-size:22px;
   font-weight:bold;
-  color:var(--pink);
 }
 
 .reason{
-  margin-top:20px;
+  margin-top:25px;
   font-size:14px;
-  opacity:.9;
-  line-height:1.7;
-}
-
-/* toast */
-.toast{
-  position:fixed;
-  bottom:25px;
-  right:25px;
-  background:linear-gradient(135deg,#ff9ed6,#8fd3ff,#caa6ff);
-  padding:15px 20px;
-  border-radius:18px;
-  font-size:13px;
-  box-shadow:0 0 25px rgba(200,160,255,.6);
-  transition:.6s;
+  line-height:1.8;
 }
 
 /* review bubble */
@@ -131,40 +113,55 @@ h1{
   left:50%;
   transform:translateX(-50%);
   background:linear-gradient(145deg,#ff9ed6,#caa6ff);
-  padding:14px 20px;
-  border-radius:30px;
-  font-size:13px;
-  box-shadow:0 10px 30px rgba(200,160,255,.6);
-  animation:floatReview 12s ease forwards;
+  padding:16px 22px;
+  border-radius:40px;
+  font-size:14px;
+  box-shadow:0 15px 40px rgba(200,160,255,.6);
+  animation:floatReview 18s ease forwards;
   display:flex;
-  align-items:flex-start;
-  gap:8px;
+  gap:10px;
 }
 
 @keyframes floatReview{
+  70%{opacity:1;}
   100%{
-    transform:translate(-50%,-85vh);
-    opacity:0;
+    transform:translate(-50%,-80vh);
+    opacity:.9;
   }
 }
 
-.platformIcon{
-  font-size:16px;
+/* order toast */
+.toast{
+  position:fixed;
+  bottom:25px;
+  right:25px;
+  background:linear-gradient(135deg,#8fd3ff,#caa6ff);
+  padding:15px 20px;
+  border-radius:25px;
+  font-size:13px;
+  box-shadow:0 0 25px rgba(200,160,255,.6);
+  transition:.6s;
 }
 
-/* flowers & bubbles */
-.flower,.bubble{
-  position:absolute;
-  animation:floatBg linear infinite;
+/* line button */
+.lineBtn{
+  margin-top:25px;
+  display:inline-block;
+  padding:14px 28px;
+  border-radius:50px;
+  background:#00c300;
+  color:white;
+  font-weight:600;
+  text-decoration:none;
+  box-shadow:0 8px 25px rgba(0,195,0,.4);
+  transition:.3s;
 }
-@keyframes floatBg{
-  100%{transform:translateY(-120vh);}
+.lineBtn:hover{
+  transform:scale(1.05);
 }
 </style>
 </head>
 <body>
-
-<canvas id="network"></canvas>
 
 <audio id="popSound" preload="auto">
 <source src="https://assets.mixkit.co/sfx/preview/mixkit-bubble-pop-1993.mp3">
@@ -181,19 +178,26 @@ h1{
 <h1>Friend Follow</h1>
 
 <div class="tagline">
-ระบบดันยอดอัตโนมัติ • เพิ่มผู้ติดตาม • ดันคลิปฟีด • เพิ่มหัวใจ
+ระบบดันยอดอัตโนมัติ • เพิ่มผู้ติดตาม • ดันคลิป • เพิ่มหัวใจ
 </div>
 
-<div class="platforms">
-<div class="card">TikTok<br><div class="number" id="tiktok"></div>ออเดอร์วันนี้</div>
-<div class="card">Instagram<br><div class="number" id="ig"></div>ออเดอร์วันนี้</div>
-<div class="card">Facebook<br><div class="number" id="fb"></div>ออเดอร์วันนี้</div>
+<div class="stats">
+<div class="statBubble">TikTok<br><div class="statNumber" id="tk"></div></div>
+<div class="statBubble">Instagram<br><div class="statNumber" id="ig"></div></div>
+<div class="statBubble">Facebook<br><div class="statNumber" id="fb"></div></div>
 </div>
 
 <div class="reason">
-ระบบทำงานอัตโนมัติรวดเร็ว • ปลอดภัยต่อบัญชี • เช็คสถานะได้ตลอดเวลา<br>
-ให้บริการต่อเนื่องทุกวัน ตลอด 24 ชั่วโมง
+<b>ทำไมต้องใช้บริการกับเรา?</b><br>
+✔ ระบบอัตโนมัติทำงานรวดเร็ว<br>
+✔ ปลอดภัยต่อบัญชี ไม่หลุด<br>
+✔ เช็คสถานะได้ตลอดเวลา<br>
+✔ ให้บริการต่อเนื่องทุกวัน 24 ชม.
 </div>
+
+<a href="https://line.me/R/ti/p/@geg4960w" class="lineBtn">
+ติดต่อแอดมิน Line : @geg4960w
+</a>
 
 </div>
 
@@ -202,121 +206,53 @@ h1{
 /* fade */
 window.onload=()=>content.classList.add("show");
 
-/* daily lock */
+/* daily number lock */
 function seed(max){
 let d=new Date().toISOString().slice(0,10);
 let h=0;
 for(let i=0;i<d.length;i++){h=d.charCodeAt(i)+((h<<5)-h);}
 return Math.abs(h%max);
 }
-tiktok.innerText=seed(180)+100;
+tk.innerText=seed(200)+100;
 ig.innerText=seed(150)+80;
 fb.innerText=seed(120)+60;
 
-/* network with lines */
-const canvas=network;
-const ctx=canvas.getContext("2d");
-canvas.width=innerWidth;
-canvas.height=innerHeight;
-let nodes=[...Array(35)].map(()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,vx:(Math.random()-0.5)*0.4,vy:(Math.random()-0.5)*0.4}));
-(function draw(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-nodes.forEach(n=>{
-n.x+=n.vx;n.y+=n.vy;
-if(n.x<0||n.x>canvas.width)n.vx*=-1;
-if(n.y<0||n.y>canvas.height)n.vy*=-1;
-ctx.beginPath();ctx.arc(n.x,n.y,2,0,Math.PI*2);
-ctx.fillStyle="#ffffff40";ctx.fill();
-});
-for(let i=0;i<nodes.length;i++){
-for(let j=i+1;j<nodes.length;j++){
-let dx=nodes[i].x-nodes[j].x;
-let dy=nodes[i].y-nodes[j].y;
-let dist=Math.sqrt(dx*dx+dy*dy);
-if(dist<120){
-ctx.beginPath();
-ctx.moveTo(nodes[i].x,nodes[i].y);
-ctx.lineTo(nodes[j].x,nodes[j].y);
-ctx.strokeStyle="#ffffff20";
-ctx.stroke();
-}
-}
-}
-requestAnimationFrame(draw);
-})();
-
-/* flowers */
-const flowers=["🌸","🌺","🌷"];
-for(let i=0;i<10;i++){
-let f=document.createElement("div");
-f.className="flower";
-f.innerText=flowers[Math.floor(Math.random()*flowers.length)];
-f.style.left=Math.random()*100+"%";
-f.style.animationDuration=(Math.random()*20+15)+"s";
-document.body.appendChild(f);
-}
-
-/* bubbles */
-for(let i=0;i<15;i++){
-let b=document.createElement("div");
-b.className="bubble";
-let size=Math.random()*60+20;
-b.style.width=size+"px";
-b.style.height=size+"px";
-b.style.left=Math.random()*100+"%";
-b.style.background="linear-gradient(145deg,#ff9ed6,#caa6ff)";
-b.style.opacity=".12";
-b.style.animationDuration=(Math.random()*25+15)+"s";
-document.body.appendChild(b);
-}
-
-/* review bubble */
+/* review */
 const names=["Mxxy","Ployya","Namtanx","Jxmmy","Praewa","Mildd"];
-const msgs=["แอดใจดีมากแถมเยอะมาก 💗","ยอดขึ้นเร็วจริง","บริการดีมากค่ะ","ระบบไวสุด ๆ"];
-const icons=["🎵","📸","👍"];
+const msgs=[
+"แอดใจดีมากแถมเยอะมาก 💗",
+"ยอดขึ้นเร็วแบบไม่คิดว่าจะไวขนาดนี้",
+"บริการดีมาก สั่งซ้ำแน่นอน",
+"ระบบไวสุด ๆ ไม่มีสะดุด"
+];
+
 function mask(n){
-let hide=Math.floor(Math.random()*(n.length-1));
-return n[0]+("*".repeat(n.length-1-hide))+(hide>0?n.slice(-hide):"");
+return n[0]+"***"+n[n.length-1];
 }
-let reviewActive=false;
 
 function review(){
-if(reviewActive)return;
-reviewActive=true;
 let div=document.createElement("div");
 div.className="reviewBubble";
-div.innerHTML=`<div class="platformIcon">${icons[Math.floor(Math.random()*icons.length)]}</div>
-<div><b>${mask(names[Math.floor(Math.random()*names.length)])}</b><br>
-${msgs[Math.floor(Math.random()*msgs.length)]}</div>`;
+div.innerHTML=`💗 <b>${mask(names[Math.floor(Math.random()*names.length)])}</b><br>
+${msgs[Math.floor(Math.random()*msgs.length)]}`;
 document.body.appendChild(div);
-popSound.volume=0.25;popSound.play();
-setTimeout(()=>{div.remove();reviewActive=false;},12000);
+popSound.volume=0.3;
+popSound.play();
+setTimeout(()=>div.remove(),18000);
 }
-setInterval(review,35000);
+setInterval(review,40000);
 
 /* order toast */
-const statuses=["ชำระเงินแล้ว","กำลังดำเนินการ","เสร็จงาน"];
-function orderID(){
-let d=new Date();
-return "FF-"+d.getFullYear().toString().slice(2)+String(d.getMonth()+1).padStart(2,"0")+String(d.getDate()).padStart(2,"0")+"-"+(Math.floor(Math.random()*9000)+1000);
-}
-function maskOrder(id){return id.slice(0,id.length-3)+"***";}
-let toastActive=false;
-
 function order(){
-if(toastActive)return;
-toastActive=true;
 let div=document.createElement("div");
 div.className="toast";
-div.innerHTML=`<b>${maskOrder(orderID())}</b><br>
-${statuses[Math.floor(Math.random()*3)]}<br>
-${Math.floor(Math.random()*20)+1} นาทีที่แล้ว`;
+div.innerHTML="<b>FF-******</b><br>กำลังดำเนินการ";
 document.body.appendChild(div);
-dingSound.volume=0.2;dingSound.play();
-setTimeout(()=>{div.style.opacity="0"},7000);
-setTimeout(()=>{div.remove();toastActive=false;},8000);
+dingSound.volume=0.2;
+dingSound.play();
+setTimeout(()=>div.remove(),8000);
 }
-setInterval(order,20000);
+setInterval(order,25000);
 
 </script>
 </body>
