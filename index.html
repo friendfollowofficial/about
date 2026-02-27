@@ -414,37 +414,39 @@ function jumpIncrease(id, max){
   }
 }
 
-/* ================= RANDOM JUMP ENGINE ================= */
+/* ================= NATURAL JUMP ENGINE ================= */
 
-function scheduleJump(id, max, baseDelay){
+function scheduleJump(id, max, minDelay, maxDelay){
 
   function run(){
 
     jumpIncrease(id, max);
 
-    // สุ่มเวลาใหม่ทุกครั้ง
-    let randomDelay = baseDelay + Math.random()*baseDelay;
+    let delay = Math.random() * (maxDelay - minDelay) + minDelay;
 
-    // กลางวันไวขึ้น
+    // ช่วงพีค 10:00-16:00 เพิ่มความถี่เล็กน้อย
     const mins = minutesSinceMidnight();
     if(mins >= 600 && mins <= 960){
-      randomDelay *= 0.7;
+      delay *= 0.85;
     }
 
-    setTimeout(run, randomDelay);
+    setTimeout(run, delay);
   }
 
-  run();
+  // เริ่มแบบสุ่มดีเลย์ครั้งแรก
+  setTimeout(run, Math.random()*3000);
 }
 
-// TikTok ไวสุด
-scheduleJump("tiktok", tkMax, 2000);
+/*
+ช่วงเวลาที่ตั้งไว้แบบธรรมชาติ:
+TikTok 3–8 วิ
+IG 5–12 วิ
+FB 8–18 วิ
+*/
 
-// IG ปานกลาง
-scheduleJump("ig", igMax, 3500);
-
-// FB ช้าที่สุด
-scheduleJump("fb", fbMax, 5500);
+scheduleJump("tiktok", tkMax, 3000, 8000);
+scheduleJump("ig", igMax, 5000, 12000);
+scheduleJump("fb", fbMax, 8000, 18000);
 
 /* ================= FLOWERS ================= */
 
