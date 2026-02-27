@@ -314,24 +314,65 @@ function draw(){
 }
 draw();
 
-/* ================= DAILY LOCK ================= */
+/* ================= SMART DAILY GROWTH ================= */
 
-function getDailySeedNumber(offset){
-  const today=new Date().toISOString().slice(0,10);
-  let hash=0;
-  for(let i=0;i<today.length;i++){
-    hash=today.charCodeAt(i)+((hash<<5)-hash);
+/*
+แนวคิด:
+- ทุกวันเริ่ม 0
+- เพิ่มตามช่วงเวลา
+- ทุกคนเห็นเลขเหมือนกัน
+*/
+
+function todayKey(){
+  return new Date().toISOString().slice(0,10);
+}
+
+function minutesSinceMidnight(){
+  const now = new Date();
+  return now.getHours()*60 + now.getMinutes();
+}
+
+// max ต่อวัน
+const tkMax = 260;
+const igMax = 210;
+const fbMax = 160;
+
+function calculateValue(max){
+  
+  const mins = minutesSinceMidnight();
+  
+  // สัดส่วนของวัน (0 - 1)
+  let ratio = mins / 1440;
+
+  // ทำให้กลางวันพุ่งมากขึ้น
+  if(mins >= 600 && mins <= 960){ 
+    // 10:00 - 16:00 boost
+    ratio += 0.15;
   }
-  return Math.abs(hash+offset);
+
+  if(ratio > 1) ratio = 1;
+
+  // base จากวัน (เพื่อให้แต่ละวันยอดไม่เท่ากัน)
+  let hash = 0;
+  const key = todayKey();
+  for(let i=0;i<key.length;i++){
+    hash = key.charCodeAt(i) + ((hash<<5)-hash);
+  }
+
+  const dayFactor = Math.abs(hash % 40);
+
+  return Math.floor((max - 40 + dayFactor) * ratio);
 }
 
-function getDailyBase(max){
-  return getDailySeedNumber(max)%max;
+function updateDailyNumbers(){
+  document.getElementById("tiktok").innerText = calculateValue(tkMax);
+  document.getElementById("ig").innerText = calculateValue(igMax);
+  document.getElementById("fb").innerText = calculateValue(fbMax);
 }
 
-document.getElementById("tiktok").innerText=getDailyBase(180)+80;
-document.getElementById("ig").innerText=getDailyBase(150)+60;
-document.getElementById("fb").innerText=getDailyBase(120)+40;
+// update ทุก 60 วิ
+updateDailyNumbers();
+setInterval(updateDailyNumbers, 60000);
 
 /* ================= FLOWERS ================= */
 
