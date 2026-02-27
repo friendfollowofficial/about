@@ -414,10 +414,37 @@ function jumpIncrease(id, max){
   }
 }
 
-// interval ต่างกัน → TikTok ไวสุด
-setInterval(()=>jumpIncrease("tiktok", tkMax), 2500);
-setInterval(()=>jumpIncrease("ig", igMax), 4000);
-setInterval(()=>jumpIncrease("fb", fbMax), 6000);
+/* ================= RANDOM JUMP ENGINE ================= */
+
+function scheduleJump(id, max, baseDelay){
+
+  function run(){
+
+    jumpIncrease(id, max);
+
+    // สุ่มเวลาใหม่ทุกครั้ง
+    let randomDelay = baseDelay + Math.random()*baseDelay;
+
+    // กลางวันไวขึ้น
+    const mins = minutesSinceMidnight();
+    if(mins >= 600 && mins <= 960){
+      randomDelay *= 0.7;
+    }
+
+    setTimeout(run, randomDelay);
+  }
+
+  run();
+}
+
+// TikTok ไวสุด
+scheduleJump("tiktok", tkMax, 2000);
+
+// IG ปานกลาง
+scheduleJump("ig", igMax, 3500);
+
+// FB ช้าที่สุด
+scheduleJump("fb", fbMax, 5500);
 
 /* ================= FLOWERS ================= */
 
