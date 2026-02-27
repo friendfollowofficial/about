@@ -343,8 +343,6 @@ function draw(){
 }
 draw();
 
-
-}
 /* ================= GLOBAL LOCKED COUNTER ================= */
 
 /*
@@ -483,9 +481,14 @@ function showOrderToast(){
 }
 
 /* ขึ้นทุก 18 วิ */
-setInterval(()=>{
+function scheduleOrder(){
   showOrderToast();
-},18000);
+  let next = 1500000 + Math.random()*600000; 
+  // 25–35 นาที
+  setTimeout(scheduleOrder, next);
+}
+
+scheduleOrder();
 
 /* ================= REVIEW SYSTEM ================= */
 
